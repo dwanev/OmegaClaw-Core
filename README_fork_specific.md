@@ -1,4 +1,11 @@
 
+# AIM
+
+1) Get OmegaClaw running and start to understand it
+2) Get it working against a local LLM.
+3) Understand custom skills.
+
+
 # List of changes since forking
 
 The code was produced during a hackathon on/of OmegaClaw. 
@@ -68,6 +75,8 @@ Send dwane the message 'that the bananas are green' and then write the same mess
  - LLM settings like temperature have not been looked at. Reducing temperature may make the example more reproducible.
 
 # Results
+
+OmegaClaw **CAN** be run natively on a Macbook. (**beware** it is not yet sandboxed)
 
 The query was process correctly. The following was returned from the LLM:
 (RESPONSE: ((dv-skill1 "that the bananas are green") (write-file "./dwane.txt" "that the bananas are green")))
