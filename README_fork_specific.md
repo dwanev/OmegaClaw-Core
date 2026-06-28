@@ -1,7 +1,7 @@
 
 # AIM
 
-1) Get OmegaClaw running and start to understand it
+1) Get OmegaClaw running locally and start to understand it
 2) Get it working against a local LLM.
 3) Understand custom skills.
 
