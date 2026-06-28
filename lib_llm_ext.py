@@ -239,13 +239,18 @@ class OllamaProvider(AbstractAIProvider):
 
             """
 
+            print("DWANE REF248 ", content)
             sysmsg, usermsg = content.split(":-:-:-:", 1)
+            sysmsg = sysmsg.replace("_apostrophe_","'")
+            sysmsg = sysmsg.replace("_newline_","'")
+
+
             if sysmsg.strip():
                 # repos/OmegaClaw-Core/memory/prompt_gemma.txt
                 # with open("./repos/OmegaClaw-Core/memory/prompt_gemma.txt") as f:
                 #     sys_prompt = " ".join(f.readlines())
                 messages.append({"role": "system", "content": sysmsg.strip()})
-            print("DWANE REF248 ", content)
+
             messages.append({"role": "user", "content": usermsg.strip()})
         else:
             messages.append({"role": "user", "content": content.strip()})

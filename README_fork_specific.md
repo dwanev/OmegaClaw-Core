@@ -54,9 +54,8 @@ Send dwane the message "that the bananas are green" and then write the same mess
 
 # Limitations
 
- - The code is being copied into this repo, and has not yet been fully tested.
- - The 'prompt.txt' file needed to be overwritten with the prompt above. Swapping in a clean way is still in progress. 
-
+ - The 'prompt.txt' file needed to be overwritten with the prompt above. Swapping in a clean way is still in progress.
+ - _quote_ _newline_ and others are stripped from the prompts sent to gemma. this seems to be necessary, but where it has been implemented probably violates the design of the rest of the system.
 
 
 # Results
