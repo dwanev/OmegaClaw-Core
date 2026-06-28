@@ -48,12 +48,16 @@ SKILLS: [
 Task 
 `
 
-# Query entered to the system via IRC
+# User instruction entered to the system via IRC
 
+`
 Send dwane the message "that the bananas are green" and then write the same message to the file "./dwane.txt"
- - triggered a syntax error in the result as the LLM returned the " symbols.
+`
+ - triggered a syntax error in the result as the LLM returned the " symbols, and metta(?) could not parse it.
 
+`
 Send dwane the message 'that the bananas are green' and then write the same message to the file ./dwane.txt
+`
  - this version is processed correctly
 
 # Limitations
