@@ -1,9 +1,9 @@
 import os, time
 import openai
 from typing import Optional
-import urllib.error
 import json
-
+import urllib.request
+import urllib.error
 
 def _log_raw(provider: str, model: str, raw: str) -> None:
     ts = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
@@ -234,15 +234,18 @@ class OllamaProvider(AbstractAIProvider):
 
             <|turn>system
             <|think|>You are a helpful assistant.<|tool>declaration:get_current_temperature{...}<tool|><turn|>
+            
+            gemma does not have the tokens _newline_ or 
 
             """
 
             sysmsg, usermsg = content.split(":-:-:-:", 1)
             if sysmsg.strip():
                 # repos/OmegaClaw-Core/memory/prompt_gemma.txt
-                with open("./repos/OmegaClaw-Core/memory/prompt_gemma.txt") as f:
-                    sys_prompt = " ".join(f.readlines())
-                messages.append({"role": "system", "content": sys_prompt.strip()})
+                # with open("./repos/OmegaClaw-Core/memory/prompt_gemma.txt") as f:
+                #     sys_prompt = " ".join(f.readlines())
+                messages.append({"role": "system", "content": sysmsg.strip()})
+            print("DWANE REF248 ", content)
             messages.append({"role": "user", "content": usermsg.strip()})
         else:
             messages.append({"role": "user", "content": content.strip()})

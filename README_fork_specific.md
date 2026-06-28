@@ -52,6 +52,11 @@ Task
 
 Send dwane the message "that the bananas are green" and then write the same message to the file "./dwane.txt"
 
+# Limitations
+
+ - The code is being copied into this repo, and has not yet been fully tested.
+ - The 'prompt.txt' file needed to be overwritten with the prompt above. Swapping in a clean way is still in progress. 
+
 
 
 # Results
