@@ -54,6 +54,12 @@
 (= (technical-analysis $ticker)
    (py-call (agentverse.technical_analysis $ticker)))
 
+
+(= (dv-skill1 $str)
+   (py-call (extensions_dv.skill1 $str)))
+
+
+
 !(import_prolog_functions_from_file (library OmegaClaw-Core ./src/skills.pl) (shell first_char gc read_file_tail))
 
 (= (metta $str)
