@@ -9,7 +9,10 @@ def apply_security_policy(path):
         if path:
             policy = FileSystemPolicy()
             policy.load_file(path)
-            policy.apply()
+            if sys.platform == "linux":
+                policy.apply()
+            else:
+                print("Warning: Skipping Landlock security policy (unsupported OS).")
         else:
             print("[policy.apply_security_policy]: securityPolicyPath is not set")
     except Exception as e:
