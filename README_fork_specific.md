@@ -51,12 +51,16 @@ Task
 # Query entered to the system via IRC
 
 Send dwane the message "that the bananas are green" and then write the same message to the file "./dwane.txt"
+ - triggered a syntax error in the result as the LLM returned the " symbols.
+
+Send dwane the message 'that the bananas are green' and then write the same message to the file ./dwane.txt
+ - this version is processed correctly
 
 # Limitations
 
  - The 'prompt.txt' file needed to be overwritten with the prompt above. Swapping in a clean way is still in progress.
  - _quote_ _newline_ and others are stripped from the prompts sent to gemma. this seems to be necessary, but where it has been implemented probably violates the design of the rest of the system.
-
+ - LLM settings like temperature have not been looked at. Reducing temperature may make the example more reproducible.
 
 # Results
 
