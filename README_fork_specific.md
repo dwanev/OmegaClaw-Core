@@ -48,14 +48,27 @@ SKILLS: [
 Task 
 `
 
+# Query entered to the system via IRC
+
+Send dwane the message "that the bananas are green" and then write the same message to the file "./dwane.txt"
+
+
+
 # Results
+
+The query was process correctly. The following was returned from the LLM:
+(RESPONSE: ((dv-skill1 "that the bananas are green") (write-file "./dwane.txt" "that the bananas are green")))
+
+Which was parsed correctly and both actions were triggered correctly. 
 
 System could process the prompt at around 384.59 tokens per second, and could answer at about 26.46 tokens per second.
 Running locally allowed 
- - faster prompt tuning,
+ - faster prompt tuning
  - faster iteration time on code changes
  - deeper understanding of the code
  - no concern over token usage
  - ability to reduce or remove 'sleeps' between messages to LLM, i.e. no dead time.
+
+
 
 
