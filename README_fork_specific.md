@@ -5,18 +5,19 @@ The code was produced during a hackathon on/of OmegaClaw.
 It is a series of small changes that get the system running on MacOS locally
 against gemma4:e4b which is served via ollama.
 
-gemma4:e4b requires about 8GB of memory.
+gemma4:e4b requires about 8GB of memory and could process 384.59 tokens per second for the prompt and could 
+answer at about 26.46 tokens per second on a Macbook M3 with 96GB of memory.
 
 
 # Changes
 
- - Install - built swi-prolog from source so that it was compiles against the correct python version.   
+ - Install - built swi-prolog from source so that it was compiles against the python version installed in the system.   
 `
  brew reinstall --build-from-source swi-prolog
 `
  - BUG: Code assumes linux and fails on MacOS. Add check which disables Landlock policy and warns. 
- - New provider that loads a custom system prompt
-
+ - New provider that connects to ollama, and strips certain strings from the prompts.
+ - New system prompt
 
 
 # New System Prompt Used  
