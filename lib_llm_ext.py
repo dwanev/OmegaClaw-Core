@@ -1,6 +1,8 @@
 import os, time
 import openai
 from typing import Optional
+import urllib.error
+
 
 def _log_raw(provider: str, model: str, raw: str) -> None:
     ts = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
@@ -91,6 +93,10 @@ class AIProvider(AbstractAIProvider):
     def _clean_text(self, text: str) -> str:
         """Unescape special characters."""
         return text.replace("_quote_", '"').replace("_apostrophe_", "'")
+
+    def __str__(self):
+        return self.name + " " + self._var_name +" " + self._model_name + " " + self._base_url + " " + self._client if self._client else ""
+
 
 class OpenRouterProvider(AIProvider):
     """OpenRouter provider with reasoning mode enabled (reasoning tokens excluded from the response)."""
@@ -188,6 +194,119 @@ class OpenAIProvider(AIProvider):
             return ""
 
 
+class OllamaProvider(AbstractAIProvider):
+    """Ollama provider using the native REST API."""
+
+    def __init__(self, name: str, var_name: str, model_name: str, base_url: str):
+        super().__init__(name)
+        self._var_name = var_name
+        self._model_name = model_name
+
+        # Override to ensure the chat endpoint is used, mapping away from /api/generate
+        self._base_url = base_url
+        if self._base_url.endswith("/api/generate"):
+            self._base_url = self._base_url.replace("/api/generate", "/api/chat")
+        elif not self._base_url.endswith("/api/chat"):
+            self._base_url = self._base_url.rstrip("/") + "/api/chat"
+
+    @property
+    def is_available(self) -> bool:
+        """Check if provider is configured (without initializing)."""
+        # Local endpoints are considered available without requiring API keys
+        if "localhost" in self._base_url or "127.0.0.1" in self._base_url:
+            return True
+        return bool(os.environ.get("GATEWAY_URL")) or bool(os.environ.get(self._var_name))
+
+    def chat(self, content: str, max_tokens: int = 6000, reasoning: str = "medium", **kwargs) -> str:
+        """Send chat request via Ollama's native API, capturing the thinking trace."""
+        messages = []
+        print("DWANE REF220")
+        # hit in my code from debugger
+
+        # Parse system and user messages utilizing your existing :-:-:-: separator convention
+        if ":-:-:-:" in content:
+            """
+            Gemma was trained with the following roles:
+                system,       # the LLM as a whole. "You are a helpful assistant."
+                user,         # end user "What's the temperature in London?"
+                assistant     # the llm agent itself
+
+            <|turn>system
+            <|think|>You are a helpful assistant.<|tool>declaration:get_current_temperature{...}<tool|><turn|>
+
+            """
+
+            sysmsg, usermsg = content.split(":-:-:-:", 1)
+            if sysmsg.strip():
+                with open("./memory/prompt_gemma.txt") as f:
+                    sys_prompt = " ".join(f.readlines())
+                messages.append({"role": "system", "content": sys_prompt.strip()})
+            messages.append({"role": "user", "content": usermsg.strip()})
+        else:
+            messages.append({"role": "user", "content": content.strip()})
+
+        # Construct payload specifically for Ollama APIs
+        payload = {
+            "model": self._model_name,
+            "messages": messages,
+            "stream": False,
+            "think": True,  # Explicitly enable the thinking trace in the API
+            "options": {
+                "num_predict": max_tokens
+            }
+        }
+
+        # Append extra kwargs (like temperature, top_p, etc.) if provided
+        if kwargs:
+            payload["options"].update(kwargs)
+
+        # print(f"DWANE REF263 payload TO LLM {json.dumps(payload, indent=2)}")
+
+        try:
+            req = urllib.request.Request(
+                self._base_url,
+                data=json.dumps(payload).encode('utf-8'),
+                headers={'Content-Type': 'application/json'}
+            )
+
+            api_key = os.environ.get(self._var_name)
+            if api_key and api_key != "proxy":
+                req.add_header("Authorization", f"Bearer {api_key}")
+
+            with urllib.request.urlopen(req, timeout=120) as response:
+                result = json.loads(response.read().decode('utf-8'))
+
+                # print(f"DWANE REF264 result from LLM: {json.dumps(result, indent=2)}")
+                # Extract both the thinking trace and the final content
+                message_obj = result.get("message", {})
+                thinking_text = message_obj.get("thinking", "")
+                final_content = message_obj.get("content", "")
+
+                # Combine them into a single string for your existing return architecture
+                if thinking_text:
+                    raw = f"{thinking_text}\n{final_content}"
+                else:
+                    raw = final_content
+
+                _log_raw(self._name, self._model_name, raw)
+                return self._clean_text(raw)
+
+        except urllib.error.URLError as e:
+            print(f"[lib_llm_ext.OllamaProvider.chat] Network error while communicating with Ollama: {e}")
+            return ""
+        except Exception as e:
+            print(f"[lib_llm_ext.OllamaProvider.chat] Exception while processing LLM response: {e}")
+            return ""
+
+    def _clean_text(self, text: str) -> str:
+        """Unescape special characters."""
+        return text.replace("_quote_", '"').replace("_apostrophe_", "'")
+
+    def __str__(self):
+        return f"{self.name} {self._var_name} {self._model_name} {self._base_url}"
+
+
+
 class TestProvider(AbstractAIProvider):
     """Test provider for mocking LLM output"""
 
@@ -235,6 +354,8 @@ _register_provider_instance(OpenRouterProvider(name="OpenRouter", var_name="OPEN
 _register_provider_instance(OpenRouterProvider(name="MiniMaxM3", var_name="OPENROUTER_API_KEY", model_name="minimax/minimax-m3", base_url="https://openrouter.ai/api/v1"))
 _register_provider_instance(TestProvider())
 _register_provider_instance(OpenAIProvider(name="OpenAI", var_name="OPENAI_API_KEY", model_name="gpt-5.4", base_url="https://api.openai.com/v1"))
+_register_provider(name="Ollama-local", var_name="OLLAMA_API_KEY", model_name="gemma4:e4b", base_url="http://localhost:11434/api/generate")
+_register_provider_instance(OllamaProvider(name="Ollama-local", var_name="OLLAMA_API_KEY", model_name="gemma4:e4b", base_url="http://localhost:11434/api/chat"))
 
 
 def callProvider(provider_name: str, content: str, max_tokens: int = 6000, reasoning: str = "medium") -> str:
