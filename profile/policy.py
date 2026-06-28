@@ -3,6 +3,7 @@ from py_landlock import Landlock, AccessFs
 from pathlib import Path
 import enum
 import os
+import sys
 
 def apply_security_policy(path):
     try:
