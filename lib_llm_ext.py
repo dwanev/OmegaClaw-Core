@@ -2,6 +2,7 @@ import os, time
 import openai
 from typing import Optional
 import urllib.error
+import json
 
 
 def _log_raw(provider: str, model: str, raw: str) -> None:
@@ -238,7 +239,8 @@ class OllamaProvider(AbstractAIProvider):
 
             sysmsg, usermsg = content.split(":-:-:-:", 1)
             if sysmsg.strip():
-                with open("./memory/prompt_gemma.txt") as f:
+                # repos/OmegaClaw-Core/memory/prompt_gemma.txt
+                with open("./repos/OmegaClaw-Core/memory/prompt_gemma.txt") as f:
                     sys_prompt = " ".join(f.readlines())
                 messages.append({"role": "system", "content": sys_prompt.strip()})
             messages.append({"role": "user", "content": usermsg.strip()})
