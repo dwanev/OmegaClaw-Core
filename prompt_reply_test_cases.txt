@@ -1,0 +1,92 @@
+LLM test case pairs, each testcase over multiple lines.
+Test cases are split with the text 'user_request', by itself on a line.
+The user request, and response are split with the text 'expected_response' by itself on a line
+The lines before the first  'user_request' marker in this file are ignored.
+
+
+ \'- Execute MeTTa expression: metta sexpression\', \'Example to invoke Non-Axiomatic Logic via MeTTa: \',
+ \'metta (|- ((--> (× sam garfield) friend) (stv 1.0 0.9))\',
+ \'          ((--> garfield animal) (stv 1.0 0.9)))\',
+ \'metta (|- ((==> (--> (× $1 elephant) eat) (--> $1 ([] dangerous))) (stv 1.0 0.9))\',
+ \'          ((--> (× tiger elephant) eat) (stv 1.0 0.9)))\',
+ \'Also: note the $1 for independent variables, and for negated knowledge use (stv 0.0 0.9)\',
+ \'Additionally |- also works for revision, to merge evidence even when the term of both premises is the same.\',
+ \'You can also use PLN:\', \'metta (|~ ((Implication (Inheritance $1 (IntSet Feathered))\',
+ \'           (Inheritance $1 Bird)) (stv 1.0 0.9))\',
+ \'          ((Inheritance Pingu (IntSet Feathered)) (stv 1.0 0.9)))\'
+
+======================================= End of header block =====================================
+================= Start of tests, separated by user_request and expected_response ===============
+user_request
+Use the tavily-search skill (not regular search) for query 'Fetch.ai latest news'. Summarize what Tavily returns.
+expected_response
+(tavily-search "Fetch.ai latest news")
+user_request
+Your goals are 1) Use the tavily-search skill (not regular search) for query 'Fetch.ai latest news'. 2) Send what Tavily returns to the user.
+expected_response
+(tavily-search "Fetch.ai latest news")
+user_request
+remember the morning standup is at 10am
+expected_response
+(remember "the morning standup is at 10am")
+user_request
+write-file test.txt hello world
+expected_response
+(write-file "test.txt" "hello world")
+user_request
+append-file test.txt hello world
+expected_response
+(append-file "test.txt" "hello world")
+user_request
+send hello world
+expected_response
+(send "hello world")
+user_request
+send Here are the planets:\n1. Mercury\n2. Venus
+expected_response
+(send "Here are the planets:\n1. Mercury\n2. Venus")
+user_request
+what is John's phone number?
+expected_response
+(query "John's phone number")
+user_request
+What happened around 10am on Tuesday?
+expected_response
+(episodes "Tuesday 10am")
+user_request
+hold that bananas are green.
+expected_response
+(pin "bananas are green")
+user_request
+execute the shell command dir
+expected_response
+(shell "dir")
+user_request
+what is the contents of "dwane.txt"?
+expected_response
+(read-file "dwane.txt")
+user_request
+save "abc" to file "dwane.txt"
+expected_response
+(write-file "dwane.txt" "abc")
+user_request
+add "bananas" to the file shopping_list.txt
+expected_response
+(append-file "shopping_list.txt" "bananas")
+user_request
+Send "it's breakfast time" to user.
+expected_response
+(send "it's breakfast time")
+user_request
+Search the web for what planets are in the solar system
+expected_response
+(tavily-search "planets in the solar system")
+user_request
+Get technical analysis for a stock ticker for google.
+expected_response
+(technical-analysis "GOOGL")
+user_request
+remember that the morning standup is at 10am and then search for good resturants near washington state university
+expected_response
+(remember "the morning standup is at 10am")
+(tavily-search "good restaurants near Washington State University")

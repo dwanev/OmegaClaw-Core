@@ -94,3 +94,46 @@ Running locally allowed
 
 
 
+# Installation
+
+conda deactivate
+
+python3 -m venv ./.venv
+source ./.venv/bin/activate
+python3 -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+
+
+python3 -m pip install -r requirements.txt
+
+
+# Running Tests
+
+in another command line window  
+```bash  
+cd /Users/dwane/projects/other_peoples/fork/PeTTa  
+activate .venv  
+```
+
+
+start omegaClaw
+```
+provider=Ollama-local OMEGACLAW_AUTH_SECRET=33444  sh run.sh run.metta IRC_channel=ircchanneldv1
+```
+
+## Connect to IRC
+
+goto https://webchat.quakenet.org/   
+/JOIN #metaclaw777 
+
+## Run a test 
+
+export OMEGACLAW_IRC_CHANNEL=#ircchanneldv1
+export OMEGACLAW_NATIVE_LOCATION=/Users/dwane/projects/other_peoples/fork
+
+in the Autotests directory run
+pytest -s -v test_skill_episodes.py
+test_search_basic.test_search_basic
+
+
+
+
